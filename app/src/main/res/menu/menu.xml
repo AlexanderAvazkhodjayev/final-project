@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/Home"
+        app:showAsAction="ifRoom"
+        android:title="Home">
+    </item>
+    <item
+        android:id="@+id/weather"
+        android:icon="@drawable/ic_weather"
+        app:showAsAction="ifRoom"
+        android:title="Weather">
+    </item>
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/Result"
+        app:showAsAction="ifRoom"
+        android:title="Map">
+    </item>
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/ic_history"
+        app:showAsAction="ifRoom"
+        android:title="History">
+    </item>
+</menu>
