@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/home"
-        android:icon="@drawable/Home"
+        android:icon="@drawable/home"
         app:showAsAction="ifRoom"
         android:title="Home">
     </item>
     <item
-        android:id="@+id/weather"
-        android:icon="@drawable/ic_weather"
+        android:id="@+id/search"
+        android:icon="@drawable/search"
         app:showAsAction="ifRoom"
-        android:title="Weather">
+        android:title="Search">
     </item>
     <item
-        android:id="@+id/map"
-        android:icon="@drawable/Result"
+        android:id="@+id/result"
+        android:icon="@drawable/results"
         app:showAsAction="ifRoom"
-        android:title="Map">
+        android:title="Result">
     </item>
     <item
-        android:id="@+id/history"
-        android:icon="@drawable/ic_history"
+        android:id="@+id/favorite"
+        android:icon="@drawable/favorite"
         app:showAsAction="ifRoom"
-        android:title="History">
+        android:title="Favorite">
     </item>
 </menu>

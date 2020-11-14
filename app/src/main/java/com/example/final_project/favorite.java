@@ -9,13 +9,12 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class favorite extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_favorite);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -23,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.home:
+                        Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(home);
                         break;
                     case R.id.search:
                         Intent search = new Intent(getApplicationContext(), search.class);
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(results);
                         break;
                     case R.id.favorite:
-                        Intent favorite = new Intent(getApplicationContext(), favorite.class);
-                        startActivity(favorite);
                         break;
                 }
                 return true;
