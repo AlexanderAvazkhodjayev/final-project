@@ -6,6 +6,40 @@
     android:layout_height="match_parent"
     tools:context="com.example.final_project.search">
 
+        <EditText
+            android:id="@+id/textView"
+            android:layout_width="301dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="55dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="29dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginRight="55dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:hint="Search For Businesses" />
+
+
+        <EditText
+            android:id="@+id/textView3"
+            android:layout_width="301dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="55dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="98dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginRight="55dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:hint="Search For Location" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             app:labelVisibilityMode="labeled"
@@ -17,5 +51,33 @@
             app:itemBackground="@color/colorPrimary"
             app:itemIconTint="@android:color/white"
             app:itemTextColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="95dp"
+            android:layout_marginLeft="95dp"
+            android:layout_marginTop="179dp"
+            android:layout_marginEnd="46dp"
+            android:layout_marginRight="46dp"
+            android:layout_toStartOf="@+id/button2"
+            android:layout_toLeftOf="@+id/button2"
+            android:text="Search" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="179dp"
+            android:layout_marginEnd="95dp"
+            android:layout_marginRight="95dp"
+            android:text="GPS" />
 
 </RelativeLayout>
