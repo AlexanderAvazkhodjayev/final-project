@@ -7,7 +7,7 @@
     tools:context="com.example.final_project.search">
 
         <EditText
-            android:id="@+id/textView"
+            android:id="@+id/businessText"
             android:layout_width="301dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -25,7 +25,7 @@
 
 
         <EditText
-            android:id="@+id/textView3"
+            android:id="@+id/locationText"
             android:layout_width="301dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -41,19 +41,10 @@
             android:gravity="center_horizontal|center_vertical"
             android:hint="Search For Location" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            app:labelVisibilityMode="labeled"
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            app:menu="@menu/menu"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@android:color/white"
-            app:itemTextColor="@android:color/white" />
+
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/searchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -64,12 +55,12 @@
             android:layout_marginTop="179dp"
             android:layout_marginEnd="46dp"
             android:layout_marginRight="46dp"
-            android:layout_toStartOf="@+id/button2"
-            android:layout_toLeftOf="@+id/button2"
+            android:layout_toStartOf="@+id/gpsButton"
+            android:layout_toLeftOf="@+id/gpsButton"
             android:text="Search" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/gpsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -79,5 +70,17 @@
             android:layout_marginEnd="95dp"
             android:layout_marginRight="95dp"
             android:text="GPS" />
+
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            app:labelVisibilityMode="labeled"
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:menu="@menu/menu"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white" />
 
 </RelativeLayout>
