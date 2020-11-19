@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.DataOutputStream;
 
+import static com.example.final_project.R.id.home;
+
 public class MainActivity extends AppCompatActivity {
     private SignInButton signInButton;
     private GoogleSignInClient mGOogleSignInClient;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView accountEmail;
     private TextView accountID;
     private ImageView imageView;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+
 
         signInButton = findViewById(R.id.sign_in_button);
         btnSignOut = findViewById(R.id.sign_out);
@@ -50,6 +57,36 @@ public class MainActivity extends AppCompatActivity {
         accountEmail = findViewById(R.id.accEmail);
         accountID= findViewById(R.id.accId);
         imageView = (ImageView) findViewById(R.id.account_photo);
+
+
+        SharedPreferences loadData = getSharedPreferences("SHARED_PREFS",MODE_PRIVATE);
+        boolean checkStatus = loadData.getBoolean("LOGIN", false);
+
+        if(checkStatus){
+            signInButton.setVisibility(View.INVISIBLE);
+            btnSignOut.setVisibility(View.VISIBLE);
+            accountName.setVisibility(View.VISIBLE);
+            accountEmail.setVisibility(View.VISIBLE);
+            accountID.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+            accountName.setText(loadData.getString("NAME",""));
+            accountEmail.setText(loadData.getString("EMAIL",""));
+            accountID.setText(loadData.getString("ACC_ID",""));
+            Glide.with(this).load(loadData.getString("PHOTO_URL", "")).into(imageView);
+            bottomNavigationView.setVisibility(View.VISIBLE);
+
+        } else {
+            btnSignOut.setVisibility(View.INVISIBLE);
+            signInButton.setVisibility(View.VISIBLE);
+            accountName.setVisibility(View.INVISIBLE);
+            accountEmail.setVisibility(View.INVISIBLE);
+            accountID.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
+            bottomNavigationView.setVisibility(View.INVISIBLE);
+        }
+
+
+
 
 
 
@@ -74,15 +111,15 @@ public class MainActivity extends AppCompatActivity {
                 accountEmail.setVisibility(View.INVISIBLE);
                 accountID.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.INVISIBLE);
+                bottomNavigationView.setVisibility(View.INVISIBLE);
             }
         });
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.home:
+                    case home:
                         break;
                     case R.id.search:
                         Intent search = new Intent(getApplicationContext(), search.class);
@@ -129,6 +166,18 @@ public class MainActivity extends AppCompatActivity {
 
             Glide.with(this).load(acc.getPhotoUrl()).into(imageView);
 
+            SharedPreferences saveData = getSharedPreferences("SHARED_PREFS",MODE_PRIVATE);
+            SharedPreferences.Editor editor = saveData.edit();
+            editor.putString("NAME",acc.getDisplayName());
+            editor.putBoolean("LOGIN", true);
+            editor.putString("EMAIL",acc.getEmail());
+            editor.putString("PHOTO_URL", String.valueOf(acc.getPhotoUrl()));
+            editor.putString("ACC_ID",acc.getId());
+
+
+
+            editor.apply();
+            bottomNavigationView.setVisibility(View.VISIBLE);
             signInButton.setVisibility(View.INVISIBLE);
             btnSignOut.setVisibility(View.VISIBLE);
             accountName.setVisibility(View.VISIBLE);

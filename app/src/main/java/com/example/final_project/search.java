@@ -2,8 +2,11 @@ package com.example.final_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -20,12 +23,31 @@ public class search extends AppCompatActivity {
     private EditText locationText;
     private String actualLocationData;
     private String actualBusinessData;
+    String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final int REQUEST_CODE_PERMISSION = 2;
+    GPSTracker gps;
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+
+        try {
+            if (ActivityCompat.checkSelfPermission(this, mPermission) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{mPermission},
+                        REQUEST_CODE_PERMISSION);
+
+                // If any permission above not allowed by user, this condition will execute every time, else your else part will work
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         searchButton = findViewById(R.id.searchButton);
@@ -62,7 +84,33 @@ public class search extends AppCompatActivity {
             }
         });
 
+        gpsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gps = new GPSTracker(search.this);
+                Intent intent = new Intent(getApplicationContext(), results.class);
+                if(gps.canGetLocation()){
+                    String actual_lat= "";
+                    String actual_long= "";
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+                    actual_lat = String.valueOf(latitude);
+                    actual_long = String.valueOf(longitude);
 
+                    intent.putExtra("lat", actual_lat);
+                    intent.putExtra("long", actual_long);
+                    startActivity(intent);
+
+
+
+                }else{
+                    gps.showSettingsAlert();
+                }
+
+            }
+
+
+        });
 
 
 

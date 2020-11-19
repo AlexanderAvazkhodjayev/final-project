@@ -86,6 +86,7 @@
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
         app:labelVisibilityMode="labeled"
+        android:visibility="invisible"
         app:menu="@menu/menu" />
 
 </RelativeLayout>

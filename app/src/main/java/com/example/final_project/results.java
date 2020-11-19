@@ -50,6 +50,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
     private int index = 0;
     private String link = "";
     public static gpsData actualGPSData;
+    private Button favoriteButton;
     public static gpsData getGPSData() {
         return actualGPSData;
     }
@@ -67,6 +68,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
 
+
         companyName = findViewById(R.id.companyName);
         rating = findViewById(R.id.rating);
         price = findViewById(R.id.price);
@@ -75,12 +77,19 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         openClosed = findViewById(R.id.openClosed);
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
-
+        favoriteButton = findViewById(R.id.favoriteButton);
 
 
         Intent intent = getIntent();
         businessText = intent.getStringExtra("business_data");
         locationText = intent.getStringExtra("location_data");
+        String lat_coord = intent.getStringExtra("lat");
+        String long_coord = intent.getStringExtra("long");
+
+        if (!TextUtils.isEmpty(lat_coord)) {
+            link="https://api.openweathermap.org/data/2.5/weather?lat=" + lat_coord + "&lon=" + long_coord + "&appid=2397d4abcaf90749690c871029817c98";
+        }
+
 
         if(!TextUtils.isEmpty(businessText)){
             link = "https://api.yelp.com/v3/businesses/search?term="+ businessText +"&location="+ locationText +"";
@@ -88,6 +97,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
             link = "https://api.yelp.com/v3/businesses/search?location="+locationText+ "";
 
         }
+
 
         final RequestQueue queue = Volley.newRequestQueue(this);
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
@@ -114,6 +124,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             onMapReady(mMap);
 
                         }catch(Exception e){
+                            System.out.println("JSON request didn't work");
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -142,6 +153,9 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             @Override
                             public void onResponse(String response) {
                                 try {
+                                    if (index > 0){
+                                        backButton.setVisibility(View.VISIBLE);
+                                    }
                                     actualGPSData = new gpsData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
@@ -185,12 +199,16 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+
                 index -= 1;
                 final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 try {
+                                    if(index == 0){
+                                        backButton.setVisibility(View.INVISIBLE);
+                                    }
                                     actualGPSData = new gpsData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
