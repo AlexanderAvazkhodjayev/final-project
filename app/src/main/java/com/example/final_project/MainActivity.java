@@ -23,8 +23,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.DataOutputStream;
-
 import static com.example.final_project.R.id.home;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView accountEmail;
     private TextView accountID;
     private ImageView imageView;
+    public static String userID;
+    public static String userName;
     private BottomNavigationView bottomNavigationView;
+    public static yelpData actualYelpData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             accountName.setText(loadData.getString("NAME",""));
             accountEmail.setText(loadData.getString("EMAIL",""));
             accountID.setText(loadData.getString("ACC_ID",""));
+            userID = loadData.getString("EMAIL","");
+            userName = loadData.getString("NAME","");
             Glide.with(this).load(loadData.getString("PHOTO_URL", "")).into(imageView);
             bottomNavigationView.setVisibility(View.VISIBLE);
 

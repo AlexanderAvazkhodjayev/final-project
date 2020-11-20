@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +26,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,12 +55,13 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
     private Button nextButton;
     private int index = 0;
     private String link = "";
-    public static gpsData actualGPSData;
+    public static yelpData actualYelpData;
     private Button favoriteButton;
-    public static gpsData getGPSData() {
-        return actualGPSData;
-    }
 
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<String, Object> user = new HashMap<>();
+    Map<String, Object> nestedData = new HashMap<>();
 
 
 
@@ -66,6 +73,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activityMap);
         mapFragment.getMapAsync(this);
+
 
 
 
@@ -86,6 +94,45 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         String lat_coord = intent.getStringExtra("lat");
         String long_coord = intent.getStringExtra("long");
 
+
+        favoriteButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+
+                if (actualYelpData != null) {
+
+
+                    user.put("companyName", actualYelpData.name);
+                    user.put("rating", actualYelpData.rating);
+                    user.put("price", actualYelpData.price);
+                    user.put("location", actualYelpData.location);
+                    user.put("phoneNumber", actualYelpData.phoneNumber);
+                    user.put("openClosed", actualYelpData.openClosed);
+                    System.out.println(actualYelpData.openClosed);
+
+
+                }
+
+                    db.collection(MainActivity.userID).document(actualYelpData.name)
+                            .set(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("1", "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("2", "Error writing document", e);
+                                }
+                            });
+
+            }
+        });
+
+
         if (!TextUtils.isEmpty(lat_coord)) {
             link="https://api.openweathermap.org/data/2.5/weather?lat=" + lat_coord + "&lon=" + long_coord + "&appid=2397d4abcaf90749690c871029817c98";
         }
@@ -105,22 +152,35 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            actualGPSData = new gpsData();
+
+                            actualYelpData = new yelpData();
                             JSONObject json = new JSONObject(response);
                             JSONObject item = json.getJSONArray("businesses").getJSONObject(0);
+                            JSONArray arr = json.getJSONArray("businesses");
+                            if(arr.length() == 0){
+                                return;
+                            }
                             companyName.setText(item.getString("name"));
                             rating.setText(item.getString("rating"));
                             price.setText(item.getString("price"));
                             location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                             phoneNumber.setText(item.getString("display_phone"));
-                            if(String.valueOf(item.getString("is_closed")) == String.valueOf(false)){
+                            if(item.getBoolean("is_closed") == false){
                                 openClosed.setText("Closed");
+                                actualYelpData.openClosed = "Closed";
                             } else {
                                 openClosed.setText("Open");
+                                actualYelpData.openClosed = "Open";
                             }
-                            actualGPSData.name = String.valueOf(item.getString("name"));
-                            actualGPSData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                            actualGPSData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+
+                            actualYelpData.name = String.valueOf(item.getString("name"));
+                            actualYelpData.rating = String.valueOf(item.getString("rating"));
+                            actualYelpData.price = String.valueOf(item.getString("price"));
+                            actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                            actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                            actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                            actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+
                             onMapReady(mMap);
 
                         }catch(Exception e){
@@ -156,7 +216,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     if (index > 0){
                                         backButton.setVisibility(View.VISIBLE);
                                     }
-                                    actualGPSData = new gpsData();
+                                    actualYelpData = new yelpData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
                                     companyName.setText(item.getString("name"));
@@ -164,14 +224,20 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     price.setText(item.getString("price"));
                                     location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                                     phoneNumber.setText(item.getString("display_phone"));
-                                    if(String.valueOf(item.getString("is_closed")) == String.valueOf(false)){
+                                    if(item.getBoolean("is_closed") == false){
                                         openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
                                     } else {
                                         openClosed.setText("Open");
+                                        actualYelpData.openClosed = "Open";
                                     }
-                                    actualGPSData.name = String.valueOf(item.getString("name"));
-                                    actualGPSData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                                    actualGPSData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+                                    actualYelpData.name = String.valueOf(item.getString("name"));
+                                    actualYelpData.rating = String.valueOf(item.getString("rating"));
+                                    actualYelpData.price = String.valueOf(item.getString("price"));
+                                    actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                                    actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                                    actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
                                     onMapReady(mMap);
 
                                 }catch(Exception e){
@@ -209,7 +275,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     if(index == 0){
                                         backButton.setVisibility(View.INVISIBLE);
                                     }
-                                    actualGPSData = new gpsData();
+                                    actualYelpData = new yelpData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
                                     companyName.setText(item.getString("name"));
@@ -217,13 +283,20 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     price.setText(item.getString("price"));
                                     location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                                     phoneNumber.setText(item.getString("display_phone"));
-                                    if(String.valueOf(item.getString("is_closed")) == String.valueOf(false)){
+                                    if(item.getBoolean("is_closed") == false){
                                         openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
                                     } else {
                                         openClosed.setText("Open");
+                                        actualYelpData.openClosed = "Open";
                                     }
-                                    actualGPSData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                                    actualGPSData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+                                    actualYelpData.name = String.valueOf(item.getString("name"));
+                                    actualYelpData.rating = String.valueOf(item.getString("rating"));
+                                    actualYelpData.price = String.valueOf(item.getString("price"));
+                                    actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                                    actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                                    actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
                                     onMapReady(mMap);
                                 }catch(Exception e){
                                 }
@@ -278,13 +351,11 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         double long_value = 0;
         String nameOfBusiness= "";
 
-        if(actualGPSData != null){
-            lat_value = Double.parseDouble(actualGPSData.Lat);
-            System.out.println(lat_value);
-            long_value = Double.parseDouble(actualGPSData.Long);
-            System.out.println(long_value);
-            nameOfBusiness = actualGPSData.name;
-            System.out.println(nameOfBusiness);
+        if(actualYelpData != null){
+            lat_value = Double.parseDouble(actualYelpData.Lat);
+            long_value = Double.parseDouble(actualYelpData.Long);
+            nameOfBusiness = actualYelpData.name;
+
         } else{
              lat_value = 0;
              long_value = 0;
