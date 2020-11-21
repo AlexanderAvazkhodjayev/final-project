@@ -49,7 +49,7 @@ public class search extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        favorite.itemValue = "";
         searchButton = findViewById(R.id.searchButton);
         gpsButton = findViewById(R.id.gpsButton);
         businessText = findViewById(R.id.businessText);
@@ -69,6 +69,7 @@ public class search extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(locationText.getText())){
                     locationText.setHint("Please Enter location!");
+
 
                 }else {
                     String locationData = locationText.getText().toString();
@@ -126,8 +127,13 @@ public class search extends AppCompatActivity {
                     case R.id.search:
                         break;
                     case R.id.result:
-                        Intent results = new Intent(getApplicationContext(), results.class);
-                        startActivity(results);
+                        if(TextUtils.isEmpty(locationText.getText())){
+                            locationText.setHint("Please Enter location!");
+                        }else {
+                            Intent results = new Intent(getApplicationContext(), results.class);
+                            startActivity(results);
+                            break;
+                        }
                         break;
                     case R.id.favorite:
                         Intent favorite = new Intent(getApplicationContext(), favorite.class);
