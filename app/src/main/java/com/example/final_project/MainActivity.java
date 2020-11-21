@@ -56,25 +56,25 @@ public class MainActivity extends AppCompatActivity {
         btnSignOut = findViewById(R.id.sign_out);
         accountName = findViewById(R.id.accName);
         accountEmail = findViewById(R.id.accEmail);
-        accountID= findViewById(R.id.accId);
+        accountID = findViewById(R.id.accId);
         imageView = (ImageView) findViewById(R.id.account_photo);
 
 
-        SharedPreferences loadData = getSharedPreferences("SHARED_PREFS",MODE_PRIVATE);
+        SharedPreferences loadData = getSharedPreferences("SHARED_PREFS", MODE_PRIVATE);
         boolean checkStatus = loadData.getBoolean("LOGIN", false);
 
-        if(checkStatus){
+        if (checkStatus) {
             signInButton.setVisibility(View.INVISIBLE);
             btnSignOut.setVisibility(View.VISIBLE);
             accountName.setVisibility(View.VISIBLE);
             accountEmail.setVisibility(View.VISIBLE);
             accountID.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
-            accountName.setText(loadData.getString("NAME",""));
-            accountEmail.setText(loadData.getString("EMAIL",""));
-            accountID.setText(loadData.getString("ACC_ID",""));
-            userID = loadData.getString("EMAIL","");
-            userName = loadData.getString("NAME","");
+            accountName.setText(loadData.getString("NAME", ""));
+            accountEmail.setText(loadData.getString("EMAIL", ""));
+            accountID.setText(loadData.getString("ACC_ID", ""));
+            userID = loadData.getString("EMAIL", "");
+            userName = loadData.getString("NAME", "");
             Glide.with(this).load(loadData.getString("PHOTO_URL", "")).into(imageView);
             bottomNavigationView.setVisibility(View.VISIBLE);
 
@@ -95,18 +95,18 @@ public class MainActivity extends AppCompatActivity {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
 
-        mGOogleSignInClient = GoogleSignIn.getClient(this,gso);
+        mGOogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        signInButton.setOnClickListener(new View.OnClickListener(){
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 signIn();
             }
         });
 
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 mGOogleSignInClient.signOut();
                 btnSignOut.setVisibility(View.INVISIBLE);
                 signInButton.setVisibility(View.VISIBLE);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void signIn(){
+    private void signIn() {
         Intent signInIntent = mGOogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -151,15 +151,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN){
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        if (requestCode == RC_SIGN_IN) {
+            Task < GoogleSignInAccount > task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-            
+
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> task) {
-        try{
+    private void handleSignInResult(Task < GoogleSignInAccount > task) {
+        try {
 
             GoogleSignInAccount acc = task.getResult(ApiException.class);
             accountName.setText(acc.getDisplayName());
@@ -169,13 +169,13 @@ public class MainActivity extends AppCompatActivity {
 
             Glide.with(this).load(acc.getPhotoUrl()).into(imageView);
 
-            SharedPreferences saveData = getSharedPreferences("SHARED_PREFS",MODE_PRIVATE);
+            SharedPreferences saveData = getSharedPreferences("SHARED_PREFS", MODE_PRIVATE);
             SharedPreferences.Editor editor = saveData.edit();
-            editor.putString("NAME",acc.getDisplayName());
+            editor.putString("NAME", acc.getDisplayName());
             editor.putBoolean("LOGIN", true);
-            editor.putString("EMAIL",acc.getEmail());
+            editor.putString("EMAIL", acc.getEmail());
             editor.putString("PHOTO_URL", String.valueOf(acc.getPhotoUrl()));
-            editor.putString("ACC_ID",acc.getId());
+            editor.putString("ACC_ID", acc.getId());
 
 
 
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             accountID.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
 
-        }catch(ApiException e){
+        } catch (ApiException e) {
 
         }
     }

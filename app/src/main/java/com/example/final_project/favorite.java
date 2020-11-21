@@ -30,9 +30,9 @@ import static com.example.final_project.R.layout.activity_favorite;
 public class favorite extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public TextView favoriteName;
-    public ArrayList<String> list;
+    public ArrayList < String > list;
     public ListView listView;
-    public ArrayAdapter<Integer> arrayAdapter;
+    public ArrayAdapter < Integer > arrayAdapter;
     public static String userName;
     public static String itemValue;
     public int position;
@@ -50,23 +50,23 @@ public class favorite extends AppCompatActivity {
         removeButton = findViewById(R.id.deleteButton);
         viewButton = findViewById(R.id.viewButton);
         favoriteName.setText(MainActivity.userName + "'s Favorites");
-        list = new ArrayList<>();
+        list = new ArrayList < > ();
 
 
         db.collection(MainActivity.userID)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener < QuerySnapshot > () {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task < QuerySnapshot > task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document: task.getResult()) {
                                 Log.d("1", document.getId() + " => " + document.getData());
 
                                 list.add(document.getId());
 
 
                             }
-                            ArrayAdapter<String> arrayAdapter= new ArrayAdapter<String>(favorite.this, android.R.layout.simple_list_item_1, list);
+                            ArrayAdapter < String > arrayAdapter = new ArrayAdapter < String > (favorite.this, android.R.layout.simple_list_item_1, list);
                             listView.setAdapter(arrayAdapter);
 
 
@@ -83,14 +83,14 @@ public class favorite extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                    public void onItemClick(AdapterView <?> list, View v, int pos, long id) {
 
                         itemValue = (String) listView.getItemAtPosition(pos);
                         System.out.println(itemValue);
                         position = pos;
                         db.collection(MainActivity.userID).document(favorite.itemValue)
                                 .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                .addOnSuccessListener(new OnSuccessListener < Void > () {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d("1", "DocumentSnapshot successfully deleted!");
@@ -123,7 +123,7 @@ public class favorite extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                    public void onItemClick(AdapterView <?> list, View v, int pos, long id) {
                         itemValue = (String) listView.getItemAtPosition(pos);
                         Intent intent = new Intent(getApplicationContext(), results.class);
                         startActivity(intent);

@@ -67,8 +67,8 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<String, Object> user = new HashMap<>();
-    Map<String, Object> nestedData = new HashMap<>();
+    Map < String, Object > user = new HashMap < > ();
+    Map < String, Object > nestedData = new HashMap < > ();
 
 
 
@@ -104,7 +104,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
 
 
 
-        favoriteButton.setOnClickListener(new View.OnClickListener(){
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -125,31 +125,29 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
 
                 }
 
-                    db.collection(MainActivity.userID).document(actualYelpData.name)
-                            .set(user)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("1", "DocumentSnapshot successfully written!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("2", "Error writing document", e);
-                                }
-                            });
-
+                db.collection(MainActivity.userID).document(actualYelpData.name)
+                        .set(user)
+                        .addOnSuccessListener(new OnSuccessListener < Void > () {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("1", "DocumentSnapshot successfully written!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("2", "Error writing document", e);
+                            }
+                        });
             }
         });
 
 
         if (!TextUtils.isEmpty(message)) {
-
             DocumentReference docRef = db.collection(MainActivity.userID).document(message);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            docRef.get().addOnCompleteListener(new OnCompleteListener < DocumentSnapshot > () {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                public void onComplete(@NonNull Task < DocumentSnapshot > task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
@@ -179,197 +177,195 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         }
 
 
-        if(!TextUtils.isEmpty(businessText)){
-            link = "https://api.yelp.com/v3/businesses/search?term="+ businessText +"&location="+ locationText +"";
+        if (!TextUtils.isEmpty(businessText)) {
+            link = "https://api.yelp.com/v3/businesses/search?term=" + businessText + "&location=" + locationText + "";
         } else {
-            if(TextUtils.isEmpty(locationText)){
+            if (TextUtils.isEmpty(locationText)) {
                 link = "";
-            }else {
+            } else {
                 link = "https://api.yelp.com/v3/businesses/search?location=" + locationText + "";
             }
         }
 
         if (!TextUtils.isEmpty(lat_coord)) {
-            link="https://api.yelp.com/v3/businesses/search?latitude=" + lat_coord + "&longitude=" + long_coord + "";
+            link = "https://api.yelp.com/v3/businesses/search?latitude=" + lat_coord + "&longitude=" + long_coord + "";
         }
 
 
 
 
-            favoriteButton.setVisibility(View.VISIBLE);
-            nextButton.setVisibility(View.VISIBLE);
+        favoriteButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
 
-            final RequestQueue queue = Volley.newRequestQueue(this);
-            final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
+                new Response.Listener < String > () {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
 
-                                actualYelpData = new yelpData();
-                                JSONObject json = new JSONObject(response);
-                                JSONObject item = json.getJSONArray("businesses").getJSONObject(0);
-                                JSONArray arr = json.getJSONArray("businesses");
-                                if (arr.length() == 0) {
-                                    return;
-                                }
-                                companyName.setText(item.getString("name"));
-                                rating.setText(item.getString("rating"));
-                                price.setText(item.getString("price"));
-                                location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                phoneNumber.setText(item.getString("display_phone"));
-                                if (item.getBoolean("is_closed") == false) {
-                                    openClosed.setText("Closed");
-                                    actualYelpData.openClosed = "Closed";
-                                } else {
-                                    openClosed.setText("Open");
-                                    actualYelpData.openClosed = "Open";
-                                }
-
-                                actualYelpData.name = String.valueOf(item.getString("name"));
-                                actualYelpData.rating = String.valueOf(item.getString("rating"));
-                                actualYelpData.price = String.valueOf(item.getString("price"));
-                                actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
-                                actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                                actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
-
-                                onMapReady(mMap);
-
-                            } catch (Exception e) {
-                                System.out.println("JSON request didn't work");
+                            actualYelpData = new yelpData();
+                            JSONObject json = new JSONObject(response);
+                            JSONObject item = json.getJSONArray("businesses").getJSONObject(0);
+                            JSONArray arr = json.getJSONArray("businesses");
+                            if (arr.length() == 0) {
+                                return;
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println("JSON request didn't work");
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
-                    return params;
-                }
-            };
-            queue.add(stringRequest);
+                            companyName.setText(item.getString("name"));
+                            rating.setText(item.getString("rating"));
+                            price.setText(item.getString("price"));
+                            location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                            phoneNumber.setText(item.getString("display_phone"));
+                            if (item.getBoolean("is_closed") == false) {
+                                openClosed.setText("Closed");
+                                actualYelpData.openClosed = "Closed";
+                            } else {
+                                openClosed.setText("Open");
+                                actualYelpData.openClosed = "Open";
+                            }
 
+                            actualYelpData.name = String.valueOf(item.getString("name"));
+                            actualYelpData.rating = String.valueOf(item.getString("rating"));
+                            actualYelpData.price = String.valueOf(item.getString("price"));
+                            actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                            actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                            actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                            actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
 
-            final RequestQueue queue1 = Volley.newRequestQueue(this);
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    index += 1;
-                    final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                                        if (index > 0) {
-                                            backButton.setVisibility(View.VISIBLE);
-                                        }
-                                        actualYelpData = new yelpData();
-                                        JSONObject json = new JSONObject(response);
-                                        JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
-                                        companyName.setText(item.getString("name"));
-                                        rating.setText(item.getString("rating"));
-                                        price.setText(item.getString("price"));
-                                        location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                        phoneNumber.setText(item.getString("display_phone"));
-                                        if (item.getBoolean("is_closed") == false) {
-                                            openClosed.setText("Closed");
-                                            actualYelpData.openClosed = "Closed";
-                                        } else {
-                                            openClosed.setText("Open");
-                                            actualYelpData.openClosed = "Open";
-                                        }
-                                        actualYelpData.name = String.valueOf(item.getString("name"));
-                                        actualYelpData.rating = String.valueOf(item.getString("rating"));
-                                        actualYelpData.price = String.valueOf(item.getString("price"));
-                                        actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                        actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
-                                        actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                                        actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
-                                        onMapReady(mMap);
+                            onMapReady(mMap);
 
-                                    } catch (Exception e) {
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                        } catch (Exception e) {
                             System.out.println("JSON request didn't work");
                         }
-                    }) {
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
-                            return params;
-                        }
-                    };
-                    queue1.add(stringRequest);
-                }
-            });
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("JSON request didn't work");
+            }
+        }) {
+            @Override
+            public Map < String, String > getHeaders() throws AuthFailureError {
+                Map < String, String > params = new HashMap < > ();
+                params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
+                return params;
+            }
+        };
+        queue.add(stringRequest);
 
 
-            final RequestQueue queue2 = Volley.newRequestQueue(this);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    index -= 1;
-                    final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                                        if (index == 0) {
-                                            backButton.setVisibility(View.INVISIBLE);
-                                        }
-                                        actualYelpData = new yelpData();
-                                        JSONObject json = new JSONObject(response);
-                                        JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
-                                        companyName.setText(item.getString("name"));
-                                        rating.setText(item.getString("rating"));
-                                        price.setText(item.getString("price"));
-                                        location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                        phoneNumber.setText(item.getString("display_phone"));
-                                        if (item.getBoolean("is_closed") == false) {
-                                            openClosed.setText("Closed");
-                                            actualYelpData.openClosed = "Closed";
-                                        } else {
-                                            openClosed.setText("Open");
-                                            actualYelpData.openClosed = "Open";
-                                        }
-                                        actualYelpData.name = String.valueOf(item.getString("name"));
-                                        actualYelpData.rating = String.valueOf(item.getString("rating"));
-                                        actualYelpData.price = String.valueOf(item.getString("price"));
-                                        actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
-                                        actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
-                                        actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
-                                        actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
-                                        onMapReady(mMap);
-                                    } catch (Exception e) {
+        final RequestQueue queue1 = Volley.newRequestQueue(this);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                index += 1;
+                final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
+                        new Response.Listener < String > () {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    if (index > 0) {
+                                        backButton.setVisibility(View.VISIBLE);
                                     }
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println("JSON request didn't work");
-                        }
-                    }) {
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
-                            return params;
-                        }
-                    };
-                    queue2.add(stringRequest);
-                }
-            });
+                                    actualYelpData = new yelpData();
+                                    JSONObject json = new JSONObject(response);
+                                    JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
+                                    companyName.setText(item.getString("name"));
+                                    rating.setText(item.getString("rating"));
+                                    price.setText(item.getString("price"));
+                                    location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    phoneNumber.setText(item.getString("display_phone"));
+                                    if (item.getBoolean("is_closed") == false) {
+                                        openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
+                                    } else {
+                                        openClosed.setText("Open");
+                                        actualYelpData.openClosed = "Open";
+                                    }
+                                    actualYelpData.name = String.valueOf(item.getString("name"));
+                                    actualYelpData.rating = String.valueOf(item.getString("rating"));
+                                    actualYelpData.price = String.valueOf(item.getString("price"));
+                                    actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                                    actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                                    actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+                                    onMapReady(mMap);
+
+                                } catch (Exception e) {}
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("JSON request didn't work");
+                    }
+                }) {
+                    @Override
+                    public Map < String, String > getHeaders() throws AuthFailureError {
+                        Map < String, String > params = new HashMap < > ();
+                        params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
+                        return params;
+                    }
+                };
+                queue1.add(stringRequest);
+            }
+        });
+
+
+        final RequestQueue queue2 = Volley.newRequestQueue(this);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                index -= 1;
+                final StringRequest stringRequest = new StringRequest(Request.Method.GET, link,
+                        new Response.Listener < String > () {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    if (index == 0) {
+                                        backButton.setVisibility(View.INVISIBLE);
+                                    }
+                                    actualYelpData = new yelpData();
+                                    JSONObject json = new JSONObject(response);
+                                    JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
+                                    companyName.setText(item.getString("name"));
+                                    rating.setText(item.getString("rating"));
+                                    price.setText(item.getString("price"));
+                                    location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    phoneNumber.setText(item.getString("display_phone"));
+                                    if (item.getBoolean("is_closed") == false) {
+                                        openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
+                                    } else {
+                                        openClosed.setText("Open");
+                                        actualYelpData.openClosed = "Open";
+                                    }
+                                    actualYelpData.name = String.valueOf(item.getString("name"));
+                                    actualYelpData.rating = String.valueOf(item.getString("rating"));
+                                    actualYelpData.price = String.valueOf(item.getString("price"));
+                                    actualYelpData.location = String.valueOf(item.getJSONObject("location").getJSONArray("display_address").getString(0));
+                                    actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
+                                    actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
+                                    actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+                                    onMapReady(mMap);
+                                } catch (Exception e) {}
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("JSON request didn't work");
+                    }
+                }) {
+                    @Override
+                    public Map < String, String > getHeaders() throws AuthFailureError {
+                        Map < String, String > params = new HashMap < > ();
+                        params.put("Authorization", "bearer " + "uP0H4GmZuvjVUPuNoxeh5EFT6dZvZxgYSF03GmRoIHicNDciEfZwVLPPm6retR2_Co1B5rGIIocujGfB6JMtkrg86KGARcng2oIx4yNbXEFwVhoWDJO07ND0ssSuX3Yx");
+                        return params;
+                    }
+                };
+                queue2.add(stringRequest);
+            }
+        });
 
 
 
@@ -402,21 +398,21 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         mMap = googleMap;
         double lat_value = 0;
         double long_value = 0;
-        String nameOfBusiness= "";
+        String nameOfBusiness = "";
 
-        if(actualYelpData != null){
+        if (actualYelpData != null) {
             lat_value = Double.parseDouble(actualYelpData.Lat);
             long_value = Double.parseDouble(actualYelpData.Long);
             nameOfBusiness = actualYelpData.name;
 
-        } else{
-             lat_value = 0;
-             long_value = 0;
+        } else {
+            lat_value = 0;
+            long_value = 0;
         }
         LatLng TutorialsPoint = new LatLng(lat_value, long_value);
         mMap.addMarker(new MarkerOptions().position(TutorialsPoint).title(nameOfBusiness));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(TutorialsPoint));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(TutorialsPoint,14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(TutorialsPoint, 14));
 
     }
 
@@ -425,13 +421,13 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         double lat_value = latFav;
         double long_value = longFav;
 
-        String nameOfBusiness= favorite.itemValue;
+        String nameOfBusiness = favorite.itemValue;
 
 
         LatLng TutorialsPoint = new LatLng(lat_value, long_value);
         mMap.addMarker(new MarkerOptions().position(TutorialsPoint).title(nameOfBusiness));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(TutorialsPoint));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(TutorialsPoint,14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(TutorialsPoint, 14));
 
     }
 }

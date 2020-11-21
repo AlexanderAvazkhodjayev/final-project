@@ -40,7 +40,9 @@ public class search extends AppCompatActivity {
         try {
             if (ActivityCompat.checkSelfPermission(this, mPermission) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this, new String[]{mPermission},
+                ActivityCompat.requestPermissions(this, new String[] {
+                                mPermission
+                        },
                         REQUEST_CODE_PERMISSION);
 
                 // If any permission above not allowed by user, this condition will execute every time, else your else part will work
@@ -56,22 +58,22 @@ public class search extends AppCompatActivity {
         locationText = findViewById(R.id.locationText);
 
 
-        searchButton.setOnClickListener(new View.OnClickListener(){
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), results.class);
-                if(!(TextUtils.isEmpty(businessText.getText()))){
+                if (!(TextUtils.isEmpty(businessText.getText()))) {
                     String businessData = businessText.getText().toString();
                     actualBusinessData = String.valueOf(businessData);
 
                 }
 
 
-                if(TextUtils.isEmpty(locationText.getText())){
+                if (TextUtils.isEmpty(locationText.getText())) {
                     locationText.setHint("Please Enter location!");
 
 
-                }else {
+                } else {
                     String locationData = locationText.getText().toString();
                     actualLocationData = String.valueOf(locationData);
                     intent.putExtra("business_data", actualBusinessData);
@@ -90,9 +92,9 @@ public class search extends AppCompatActivity {
             public void onClick(View view) {
                 gps = new GPSTracker(search.this);
                 Intent intent = new Intent(getApplicationContext(), results.class);
-                if(gps.canGetLocation()){
-                    String actual_lat= "";
-                    String actual_long= "";
+                if (gps.canGetLocation()) {
+                    String actual_lat = "";
+                    String actual_long = "";
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
                     actual_lat = String.valueOf(latitude);
@@ -104,7 +106,7 @@ public class search extends AppCompatActivity {
 
 
 
-                }else{
+                } else {
                     gps.showSettingsAlert();
                 }
 
@@ -127,9 +129,9 @@ public class search extends AppCompatActivity {
                     case R.id.search:
                         break;
                     case R.id.result:
-                        if(TextUtils.isEmpty(locationText.getText())){
+                        if (TextUtils.isEmpty(locationText.getText())) {
                             locationText.setHint("Please Enter location!");
-                        }else {
+                        } else {
                             Intent results = new Intent(getApplicationContext(), results.class);
                             startActivity(results);
                             break;
