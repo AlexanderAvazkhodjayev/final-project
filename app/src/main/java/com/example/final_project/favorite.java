@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import static com.example.final_project.R.layout.activity_favorite;
 
 public class favorite extends AppCompatActivity {
+    // Initialization of all variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public TextView favoriteName;
     public ArrayList < String > list;
@@ -44,7 +45,7 @@ public class favorite extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(activity_favorite);
 
-
+        // Set variables equal to the different buttons and textviews
         favoriteName = findViewById(R.id.favoriteName);
         listView = (ListView) findViewById(R.id.listViewFavorites);
         removeButton = findViewById(R.id.deleteButton);
@@ -52,7 +53,7 @@ public class favorite extends AppCompatActivity {
         favoriteName.setText(MainActivity.userName + "'s Favorites");
         list = new ArrayList < > ();
 
-
+        // Obtain all documents in firestore and set them equal to the arrayAdapter, which then displays the data on the favorites tab
         db.collection(MainActivity.userID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener < QuerySnapshot > () {
@@ -61,30 +62,24 @@ public class favorite extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document: task.getResult()) {
                                 Log.d("1", document.getId() + " => " + document.getData());
-
                                 list.add(document.getId());
-
-
                             }
                             ArrayAdapter < String > arrayAdapter = new ArrayAdapter < String > (favorite.this, android.R.layout.simple_list_item_1, list);
                             listView.setAdapter(arrayAdapter);
-
-
                         } else {
                             Log.d("2", "Error getting documents: ", task.getException());
                         }
-
-
                     }
 
                 });
 
+        // After pressing the button and then the element in the listview, this code deletes the firestore data and refreshes the favorite activity
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView <?> list, View v, int pos, long id) {
-
+                        // itemValue is the actual businessName of the pressed list element
                         itemValue = (String) listView.getItemAtPosition(pos);
                         System.out.println(itemValue);
                         position = pos;
@@ -108,17 +103,13 @@ public class favorite extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                     }
                 });
-
-
-
-
-
                 System.out.println(list);
-
             }
 
 
         });
+
+        // After pressing the button and then the element in the listview, this code sends the name of the company to the results page and displays the needed information
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,9 +128,7 @@ public class favorite extends AppCompatActivity {
         });
 
 
-
-
-
+        // Bottom navigation setup
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

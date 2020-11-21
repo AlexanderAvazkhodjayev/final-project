@@ -1,5 +1,6 @@
 package com.example.final_project;
 
+// Public Static Class used for storage of the current data
 public class yelpData {
     public String name;
     public String rating;
