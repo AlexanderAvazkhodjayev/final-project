@@ -166,13 +166,22 @@
             android:text="Back" />
 
         <Button
-            android:layout_width="45dp"
             android:id="@+id/favoriteButton"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="107dp"
+            android:layout_marginBottom="115dp"
             android:drawableLeft="@drawable/heart" />
+
+        <Button
+            android:id="@+id/reviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="62dp"
+            android:text="Review" />
         ... />
 
 

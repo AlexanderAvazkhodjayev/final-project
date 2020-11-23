@@ -36,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView accountEmail;
     private TextView accountID;
     private ImageView imageView;
+    private TextView textView6;
+    private TextView textView7;
+    private TextView textView8;
     public static String userID;
+    private TextView textView9;
+    private ImageView imageView3;
     public static String userName;
     private BottomNavigationView bottomNavigationView;
     public static yelpData actualYelpData;
@@ -54,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
         accountEmail = findViewById(R.id.accEmail);
         accountID = findViewById(R.id.accId);
         imageView = (ImageView) findViewById(R.id.account_photo);
+        textView6 = findViewById(R.id.textView6);
+        textView7 = findViewById(R.id.textView7);
+        textView8 = findViewById(R.id.textView8);
+        textView9 = findViewById(R.id.textView9);
+        imageView3 = findViewById(R.id.imageView3);
 
         // Shared Preferences is an API that stores key-value pairs, it allows for read and write capabilities. The file can be private or shared.
         // Each Shared Preference file is managed by the framework.
@@ -66,11 +76,16 @@ public class MainActivity extends AppCompatActivity {
         // If signed in show the buttons and textviews below
         if (checkStatus) {
             signInButton.setVisibility(View.INVISIBLE);
+            textView9.setVisibility(View.INVISIBLE);
+            imageView3.setVisibility(View.INVISIBLE);
             btnSignOut.setVisibility(View.VISIBLE);
             accountName.setVisibility(View.VISIBLE);
             accountEmail.setVisibility(View.VISIBLE);
             accountID.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
+            textView6.setVisibility(View.VISIBLE);
+            textView7.setVisibility(View.VISIBLE);
+            textView8.setVisibility(View.VISIBLE);
             accountName.setText(loadData.getString("NAME", ""));
             accountEmail.setText(loadData.getString("EMAIL", ""));
             accountID.setText(loadData.getString("ACC_ID", ""));
@@ -80,12 +95,17 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setVisibility(View.VISIBLE);
         } else {
             // Else keep them hidden and show sign in button
-            btnSignOut.setVisibility(View.INVISIBLE);
+            textView9.setVisibility(View.VISIBLE);
+            imageView3.setVisibility(View.VISIBLE);
             signInButton.setVisibility(View.VISIBLE);
+            btnSignOut.setVisibility(View.INVISIBLE);
             accountName.setVisibility(View.INVISIBLE);
             accountEmail.setVisibility(View.INVISIBLE);
             accountID.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.INVISIBLE);
+            textView6.setVisibility(View.INVISIBLE);
+            textView7.setVisibility(View.INVISIBLE);
+            textView8.setVisibility(View.INVISIBLE);
             bottomNavigationView.setVisibility(View.INVISIBLE);
         }
 
@@ -108,11 +128,17 @@ public class MainActivity extends AppCompatActivity {
                 mGOogleSignInClient.signOut();
                 btnSignOut.setVisibility(View.INVISIBLE);
                 signInButton.setVisibility(View.VISIBLE);
+                textView9.setVisibility(View.VISIBLE);
+                imageView3.setVisibility(View.VISIBLE);
                 accountName.setVisibility(View.INVISIBLE);
                 accountEmail.setVisibility(View.INVISIBLE);
                 accountID.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.INVISIBLE);
                 bottomNavigationView.setVisibility(View.INVISIBLE);
+                textView6.setVisibility(View.INVISIBLE);
+                textView7.setVisibility(View.INVISIBLE);
+                textView8.setVisibility(View.INVISIBLE);
+
             }
         });
 
@@ -182,12 +208,17 @@ public class MainActivity extends AppCompatActivity {
             // Unhide the buttons and images when signing in
             editor.apply();
             bottomNavigationView.setVisibility(View.VISIBLE);
+            textView9.setVisibility(View.INVISIBLE);
+            imageView3.setVisibility(View.INVISIBLE);
             signInButton.setVisibility(View.INVISIBLE);
             btnSignOut.setVisibility(View.VISIBLE);
             accountName.setVisibility(View.VISIBLE);
             accountEmail.setVisibility(View.VISIBLE);
             accountID.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.VISIBLE);
+            textView6.setVisibility(View.VISIBLE);
+            textView7.setVisibility(View.VISIBLE);
+            textView8.setVisibility(View.VISIBLE);
 
         } catch (ApiException e) {
 

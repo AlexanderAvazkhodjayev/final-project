@@ -57,6 +57,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
     private TextView openClosed;
     private Button backButton;
     private Button nextButton;
+    private Button reviewButton;
     private int index = 0;
     private String link = "";
     public static yelpData actualYelpData;
@@ -90,6 +91,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
         favoriteButton = findViewById(R.id.favoriteButton);
+        reviewButton = findViewById(R.id.reviewButton);
 
         // Obtain the data sent from the intent and set them to variables for retrieval
         Intent intent = getIntent();
@@ -117,23 +119,35 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                 }
 
                 // Request to send the data to firestore database
-                db.collection(MainActivity.userID).document(actualYelpData.name)
-                        .set(user)
-                        .addOnSuccessListener(new OnSuccessListener < Void > () {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("1", "DocumentSnapshot successfully written!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("2", "Error writing document", e);
-                            }
-                        });
+                System.out.println(actualYelpData.name);
+                if(actualYelpData.name != null) {
+                    db.collection(MainActivity.userID).document(actualYelpData.name)
+                            .set(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("1", "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("2", "Error writing document", e);
+                                }
+                            });
+                }else {
+                    System.out.println("Document Name is Invalid");
+                }
             }
         });
 
+
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         // If message exists, which is the selected businessName in the favorite, then retrieve all the useful information about the business
         if (!TextUtils.isEmpty(message)) {
             DocumentReference docRef = db.collection(MainActivity.userID).document(message);
@@ -212,11 +226,11 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                             phoneNumber.setText(item.getString("display_phone"));
                             if (item.getBoolean("is_closed") == false) {
-                                openClosed.setText("Closed");
-                                actualYelpData.openClosed = "Closed";
-                            } else {
                                 openClosed.setText("Open");
                                 actualYelpData.openClosed = "Open";
+                            } else {
+                                openClosed.setText("Closed");
+                                actualYelpData.openClosed = "Closed";
                             }
                             // Save data to public static class yelpData, which then can be retrieved and set to the favorites
                             actualYelpData.name = String.valueOf(item.getString("name"));
@@ -272,11 +286,11 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                                     phoneNumber.setText(item.getString("display_phone"));
                                     if (item.getBoolean("is_closed") == false) {
-                                        openClosed.setText("Closed");
-                                        actualYelpData.openClosed = "Closed";
-                                    } else {
                                         openClosed.setText("Open");
                                         actualYelpData.openClosed = "Open";
+                                    } else {
+                                        openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
                                     }
                                     actualYelpData.name = String.valueOf(item.getString("name"));
                                     actualYelpData.rating = String.valueOf(item.getString("rating"));
@@ -330,11 +344,11 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     location.setText(item.getJSONObject("location").getJSONArray("display_address").getString(0));
                                     phoneNumber.setText(item.getString("display_phone"));
                                     if (item.getBoolean("is_closed") == false) {
-                                        openClosed.setText("Closed");
-                                        actualYelpData.openClosed = "Closed";
-                                    } else {
                                         openClosed.setText("Open");
                                         actualYelpData.openClosed = "Open";
+                                    } else {
+                                        openClosed.setText("Closed");
+                                        actualYelpData.openClosed = "Closed";
                                     }
                                     actualYelpData.name = String.valueOf(item.getString("name"));
                                     actualYelpData.rating = String.valueOf(item.getString("rating"));
