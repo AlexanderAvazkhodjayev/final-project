@@ -64,7 +64,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
     private Button favoriteButton;
     public double latFav;
     public double longFav;
-
+    public static String businessID;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map < String, Object > user = new HashMap < > ();
     Map < String, Object > nestedData = new HashMap < > ();
@@ -145,7 +145,8 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
         reviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent review = new Intent(getApplicationContext(), review.class);
+                startActivity(review);
             }
         });
         // If message exists, which is the selected businessName in the favorite, then retrieve all the useful information about the business
@@ -167,6 +168,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             openClosed.setText((String) document.getData().get("openClosed"));
                             favoriteButton.setVisibility(View.INVISIBLE);
                             nextButton.setVisibility(View.INVISIBLE);
+                            reviewButton.setVisibility(View.INVISIBLE);
                             latFav = Double.parseDouble((String) document.getData().get("lat"));
                             longFav = Double.parseDouble((String) document.getData().get("long"));
                             onFavoriteMap(mMap);
@@ -220,6 +222,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             if (arr.length() == 0) {
                                 return;
                             }
+                            businessID = item.getString("id");
                             companyName.setText(item.getString("name"));
                             rating.setText(item.getString("rating"));
                             price.setText(item.getString("price"));
@@ -240,6 +243,9 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                             actualYelpData.phoneNumber = String.valueOf(item.getString("display_phone"));
                             actualYelpData.Lat = String.valueOf(item.getJSONObject("coordinates").getString("latitude"));
                             actualYelpData.Long = String.valueOf(item.getJSONObject("coordinates").getString("longitude"));
+                            System.out.println(actualYelpData.Lat);
+                            System.out.println(actualYelpData.Long);
+
                             onMapReady(mMap);
                         } catch (Exception e) {
                             System.out.println("JSON request didn't work");
@@ -280,6 +286,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     actualYelpData = new yelpData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
+                                    businessID = item.getString("id");
                                     companyName.setText(item.getString("name"));
                                     rating.setText(item.getString("rating"));
                                     price.setText(item.getString("price"));
@@ -338,6 +345,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
                                     actualYelpData = new yelpData();
                                     JSONObject json = new JSONObject(response);
                                     JSONObject item = json.getJSONArray("businesses").getJSONObject(index);
+                                    businessID = item.getString("id");
                                     companyName.setText(item.getString("name"));
                                     rating.setText(item.getString("rating"));
                                     price.setText(item.getString("price"));
@@ -413,6 +421,7 @@ public class results extends AppCompatActivity implements OnMapReadyCallback {
 
         if (actualYelpData != null) {
             // Obtain lat and long values from the public static class (yelpData), which saves all useful business data including lat and long
+
             lat_value = Double.parseDouble(actualYelpData.Lat);
             long_value = Double.parseDouble(actualYelpData.Long);
             // Stores business data in order to display it on the pin marker on the google maps
